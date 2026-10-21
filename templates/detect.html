@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect Currency</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Modern internal layout styling for a premium dashboard feel */
+        .workspace-grid { display: flex; gap: 30px; margin-top: 25px; flex-wrap: wrap; }
+        .control-panel { flex: 1; min-width: 300px; }
+        .preview-panel { flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* Modern Hidden File Input Custom Custom Design Wrapper */
+        .file-upload-container { position: relative; width: 100%; margin-bottom: 15px; }
+        .custom-upload-btn { display: block; background: #f8fafc; border: 2px dashed #cbd5e1; color: #4b5563; padding: 18px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
+        .custom-upload-btn:hover { background: #f1f5f9; border-color: #2563eb; color: #2563eb; }
+        #image-upload { opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer; }
+
+        /* Premium Interface Buttons Styling */
+        .btn-premium { display: inline-flex; align-items: center; justify-content: center; width: 100%; color: #ffffff; border: none; padding: 14px; margin-bottom: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: all 0.2s ease; letter-spacing: 0.5px; }
+        .btn-secondary-ui { background: #374151; }
+        .btn-secondary-ui:hover { background: #1f2937; }
+        .btn-accent-ui { background: #16a34a; }
+        .btn-accent-ui:hover { background: #15803d; }
+        .btn-primary-glow { background: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+        .btn-primary-glow:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+        /* Perfect Indian Currency Aspect Ratio Viewport Frame Box (Matches ₹500/₹2000 dimensions) */
+        .currency-viewport-frame { width: 100%; max-width: 480px; height: 220px; background: #0f172a; border-radius: 12px; overflow: hidden; position: relative; border: 2px solid #e2e8f0; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); }
+        .currency-viewport-frame video { width: 100%; height: 100%; object-fit: cover; }
+        .currency-viewport-frame img { width: 100%; height: 100%; object-fit: contain; background: #0f172a; display: none; }
+        
+        /* Premium Live Real-time Response Output Panel Card Display Box */
+        .premium-result-card { background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 35px; border-left: 6px solid #2563eb; display: none; transition: all 0.3s ease; }
+        .result-layout-flex { display: flex; gap: 25px; align-items: center; margin-top: 15px; }
+        #result-image { width: 200px; height: 100px; border-radius: 6px; border: 1px solid #e2e8f0; object-fit: contain; background: #f8fafc; }
+        .result-info-metrics p { margin: 0 0 10px 0; font-size: 16px; color: #334155; }
+        
+        .real-text { color: #16a34a; font-weight: 800; font-size: 24px; display: inline-block; }
+        .fake-text { color: #dc2626; font-weight: 800; font-size: 24px; display: inline-block; }
+        
+        /* Structured Table Layout Enhancements */
+        .premium-table { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
+        .premium-table th { background: #f1f5f9; padding: 14px; font-weight: 700; color: #1e293b; border-bottom: 2px solid #e2e8f0; }
+        .premium-table td { padding: 14px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="nav-container">
+            <h2>Fake Currency Detector</h2>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/detect" class="active">Detect Currency</a></li>
+                <li><a href="/detect#history-section">History</a></li>
+                {% if session['role'] == 'admin' %}
+                    <li><a href="/admin">Admin Panel</a></li>
+                {% endif %}
+                <li><a href="/logout" class="logout-link">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-container" style="width: 90%; max-width: 1150px; margin: 40px auto; padding: 0 15px;">
+
+        <div class="detect-box" style="background: #ffffff; padding: 35px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 35px;">
+            <h2 style="color: #1e293b; margin-top: 0; font-size: 26px;">Detect Banknote Validity</h2>
+            <p style="color: #6b7280; margin-top: -10px; margin-bottom: 25px; font-size: 14px;">
+                Upload a high-resolution banknote image or trigger your device camera feed capture system down below.
+            </p>
+
+            <div class="workspace-grid">
+                <div class="control-panel">
+                    <div class="file-upload-container">
+                        <div class="custom-upload-btn" id="upload-label">📁 Click to Browse Local Files</div>
+                        <input type="file" id="image-upload" accept="image/*">
+                    </div>
+
+                    <div class="action-buttons-group">
+                        <button class="btn-premium btn-secondary-ui" onclick="startCamera()">🎥 Open Camera Feed</button>
+                        <button class="btn-premium btn-accent-ui" onclick="captureImage()">📸 Capture Snapshot</button>
+                        <button class="btn-premium btn-primary-glow" onclick="detectCurrency()">⚡ Run AI Verification</button>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="currency-viewport-frame">
+                        <video id="video" autoplay playsinline></video>
+                        <img id="preview-image" alt="Active Snapshot Preview window box View">
+                    </div>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="premium-result-card" id="result-box">
+            <h3 style="margin-top: 0; color: #1e293b; font-size: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">📋 Real-Time AI Inference Output</h3>
+            <div class="result-layout-flex">
+                <img id="result-image" src="" alt="Analyzed Target Banknote Asset Track View">
+                <div class="result-info-metrics">
+                    <p>Classification Status Verdict: <span id="result-text"></span></p>
+                    <p>Deep Learning Model Confidence: <span id="confidence-score" style="font-size: 22px; font-weight: 700; color: #2563eb;"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="detect-box" id="history-section" style="background: #ffffff; padding: 35px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <h2 style="color: #1e293b; margin-top: 0; font-size: 24px;">Your Detection History Log</h2>
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Timestamp</th>
+                        <th>Image Artifact</th>
+                        <th>Result Label</th>
+                        <th>Confidence Match</th>
+                        <th>Action Row</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table-body">
+                    {% for row in history %}
+                    {# Safe Fallback Variables Extraction Setup to handle dictionaries and tuples universally #}
+                    {% set r_id = row['id'] if row['id'] is defined else (row.id if row.id is defined else row[0]) %}
+                    {% set r_time = row['timestamp'] if row['timestamp'] is defined else (row.timestamp if row.timestamp is defined else row[1]) %}
+                    {% set r_img = row['image_path'] if row['image_path'] is defined else (row.image_path if row.image_path is defined else row[2]) %}
+                    {% set r_val = row['result'] if row['result'] is defined else (row.result if row.result is defined else row[3]) %}
+                    {% set r_conf = row['confidence_score'] if row['confidence_score'] is defined else (row.confidence_score if row.confidence_score is defined else row[4]) %}
+                    
+                    <tr id='history-row-{{ r_id }}'>
+                        <td>{{ r_id }}</td>
+                        <td style="color: #6b7280;">{{ r_time }}</td>
+                        <td>
+                            <img src="{{ r_img }}" width="110" style="border-radius: 6px; border: 1px solid #cbd5e1; display: block; object-fit: contain; background: #f8fafc; max-height: 60px;">
+                        </td>
+                        <td>
+                            {# Fixed clean non-nested logic branch block #}
+                            {% if r_val == 'Real' or r_val == 'Real_500' %}
+                                <span class="real-text" style="font-size: 15px;">{{ r_val }}</span>
+                            {% else %}
+                                <span class="fake-text" style="font-size: 15px;">{{ r_val }}</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ r_conf }}%</strong></td>
+                        <td>
+                            <button style="background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;" data-id="{{ r_id }}" onclick="deleteHistory(this.dataset.id)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer class="main-footer" style="text-align: center; padding: 30px; background: #1e293b; color: #94a3b8; margin-top: 60px;">
+        <p style="margin: 0;">&copy; 2026 Fake Currency Detection Portal. All Rights Reserved.</p>
+        <p style="margin: 6px 0 0 0; font-size: 12px; color: #64748b;">Powered by PyTorch & EfficientNet-B3 Deep Learning Systems Framework.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Fake Currency Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="nav-container">
+            <h2>Fake Currency Detector</h2>
+            <ul>
+                <li><a href="/home" class="active">Home</a></li>
+                <li><a href="/detect">Detect Currency</a></li>
+                <li><a href="/detect#history-section">History</a></li>
+                {% if session['role'] == 'admin' %}
+                    <li><a href="/admin">Admin Panel</a></li>
+                {% endif %}
+                <li><a href="/logout" class="logout-link">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <div class="hero-section">
+            <div class="hero-content">
+                <span class="badge">Next-Gen Deep Learning</span>
+                <h1>AI-Powered Fake Currency Detection</h1>
+                <p>Instantly scan and verify counterfeit ₹500 notes using high-precision Computer Vision technology.</p>
+                <div class="hero-actions">
+                    <a href="/detect" class="btn-primary-btn">Start Detection Now</a>
+                </div>
+            </div>
+        </div>
+
+        <section class="section-block">
+            <div class="info-card welcome-card">
+                <h3>Welcome back, {{ session['username'] }} 👋</h3>
+                <p>
+                    This secure portal utilizes advanced neural architectures to distinguish authentic Indian 500 Rupee banknotes from counterfeits. Engineered for financial institutes, vendors, and everyday users to combat currency fraud elegantly.
+                </p>
+            </div>
+        </section>
+
+        <h2 class="section-title">How It Works</h2>
+        <div class="grid-container column-4">
+            <div class="step-card">
+                <div class="step-num">01</div>
+                <h4>Input Image</h4>
+                <p>Upload a high-resolution banknote image or take an instantaneous screenshot directly using your webcam streaming connection.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">02</div>
+                <h4>Feature Extraction</h4>
+                <p>The system passes the image layers through a fine-tuned EfficientNet-B3 architecture mapping microscopic security features.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">03</div>
+                <h4>Neural Prediction</h4>
+                <p>The system processes complex matrices, security threads, and watermark alignments to return a definitive classified output tag.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">04</div>
+                <h4>Log Records</h4>
+                <p>The finalized result and verification timestamps are securely archived into the sqlite system database logs for future auditing.</p>
+            </div>
+        </div>
+
+        <div class="grid-container column-2">
+            <div class="info-card">
+                <h3>Key System Features</h3>
+                <ul class="premium-list">
+                    <li><span class="bullet">✦</span> Fast User Authentication & Role Safeguards</li>
+                    <li><span class="bullet">✦</span> High-Resolution Currency Upload Scanner</li>
+                    <li><span class="bullet">✦</span> Live Interactive Web-camera Input Capturing</li>
+                    <li><span class="bullet">✦</span> Chronological Diagnostic History Logs</li>
+                    <li><span class="bullet">✦</span> Structured Multi-tenant Admin Oversight Control</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Architecture Ecosystem</h3>
+                <div class="tech-grid">
+                    <div class="tech-item"><strong>Frontend:</strong> HTML5, Premium CSS3 Variables, JavaScript (ES6)</div>
+                    <div class="tech-item"><strong>Backend framework:</strong> Flask Python Stack</div>
+                    <div class="tech-item"><strong>Database Engine:</strong> SQLight Storage Tier</div>
+                    <div class="tech-item"><strong>AI Deep Learning Core:</strong> PyTorch Optimized EfficientNet-B3</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Fake Currency Detection Portal. All Rights Reserved.</p>
+            <p class="footer-subtext">Powered by PyTorch & EfficientNet-B3 Deep Learning Systems Framework.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

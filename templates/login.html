@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fake Currency Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+
+    <div class="auth-box">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to access the Fake Currency Detector</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/login">
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Enter Username" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Enter Password" required>
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Don't have an account? <a href="/register">Register</a></p>
+            <p><a href="/forgot_password" class="forgot-link">Forgot Password?</a></p>
+        </div>
+    </div>
+
+</body>
+</html>
